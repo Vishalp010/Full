@@ -9,7 +9,7 @@ export async function connect(){
       console.log('mongodb connected succefully')
     })
     connection.on('error',(err)=>{
-      console.log('mongodb connection is failed'+err)
+      console.log('mongodb connection is failed ',err)
       process.exit()
     })
   } catch (error) {

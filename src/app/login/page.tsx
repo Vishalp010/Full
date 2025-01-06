@@ -1,41 +1,63 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import {Toaster,toast} from "react-hot-toast"
 
 const LoginPage = () => {
+  const router = useRouter()
   const [user, setUser] = useState({
-    email: "",
+    username: "",
     password: "",
+    email:""
   });
+  const [buttonDisabled,setButtonDisabled] = useState(true)
+  const [loading,setLoading]= useState(false)
 
   const onLogin = async () => {
-    // Placeholder for your login logic
+    try {
+      setLoading(true)
+      const response =await axios.post("/api/users/login",user)
+      toast.success('Login succefully')
+      router.push('/profile')
+    } catch (error:any) {
+      console.log('login Failed', error.message)
+      toast.error(error.message)
+    }finally{
+      setLoading(false)
+    }
+
   };
+
+  useEffect(() => {
+      if (user?.email?.length > 0 && user?.password?.length > 0 && user?.username?.length > 0) {
+        setButtonDisabled(false);
+      } else {
+        setButtonDisabled(true);
+      }
+    }, [user]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md w-full bg-white shadow-md rounded-lg p-6">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Login
+          {loading ? "loading...": "Login"}
         </h2>
-        {/* {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>} */}
-        <form className="space-y-6">
           <div>
             <label
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Email
+              email
             </label>
             <input
-              type="email"
-              id="email"
-              name="email"
+              type="text"
+              id="username"
+              name="username"
               value={user.email}
-              // onChange={handleChange}
+              onChange={(e)=>setUser({...user,email:e.target.value})}
               placeholder="Enter your email"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
@@ -52,17 +74,17 @@ const LoginPage = () => {
               id="password"
               name="password"
               value={user.password}
-              // onChange={handleChange}
+              onChange={(e)=>setUser({...user,password:e.target.value})}
               placeholder="Enter your password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <button
             onClick={onLogin}
-            type="submit"
+            // type="submit"
             className="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out"
           >
-            Login
+            {buttonDisabled ? "Fill the details" : "Login"}
           </button>
           <div className="text-center">
             <p className="text-sm text-gray-600">
@@ -73,9 +95,10 @@ const LoginPage = () => {
               >
                 Signup
               </Link>
+              <Toaster/>
             </p>
           </div>
-        </form>
+        {/* </form> */}
       </div>
     </div>
   );
