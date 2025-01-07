@@ -32,7 +32,7 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-      if (user?.email?.length > 0 && user?.password?.length > 0 && user?.username?.length > 0) {
+      if (user?.email?.length > 0 && user?.password?.length > 0 ) {
         setButtonDisabled(false);
       } else {
         setButtonDisabled(true);
@@ -81,7 +81,6 @@ const LoginPage = () => {
           </div>
           <button
             onClick={onLogin}
-            // type="submit"
             className="w-full bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out"
           >
             {buttonDisabled ? "Fill the details" : "Login"}
